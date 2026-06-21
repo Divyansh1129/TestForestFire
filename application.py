@@ -11,12 +11,7 @@ standard_scaler = pickle.load(open('models/scaler.pkl', 'rb'))
 print("Scaler expects", standard_scaler.n_features_in_, "features")
 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-
-@app.route('/predictdata', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def predict_datapoint():
 
     if request.method == 'POST':
@@ -35,24 +30,22 @@ def predict_datapoint():
 
             # Create feature array
             features = np.array(
-                [[Temperature, RH, Ws, Rain,
-                  FFMC, DMC, ISI, Classes, Region]]
+                [[Temperature,
+                  RH,
+                  Ws,
+                  Rain,
+                  FFMC,
+                  DMC,
+                  ISI,
+                  Classes,
+                  Region]]
             )
-
-            print("Features:")
-            print(features)
 
             # Scale input
             scaled_data = standard_scaler.transform(features)
 
-            print("Scaled Data:")
-            print(scaled_data)
-
             # Predict
             result = ridge_model.predict(scaled_data)
-
-            print("Prediction:")
-            print(result)
 
             return render_template(
                 'home.html',
@@ -60,8 +53,6 @@ def predict_datapoint():
             )
 
         except Exception as e:
-            print("ERROR:")
-            print(e)
             return str(e)
 
     return render_template('home.html')
